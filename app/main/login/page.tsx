@@ -4,11 +4,6 @@ import { useRouter } from 'next/navigation'
 import { useState } from "react";
 import { IoEyeSharp,IoEyeOffSharp } from "react-icons/io5";
 
-type Result={
-    found:boolean,
-    name:string,
-    password:string
-}
 
 export default function page(){
     const [visible, setVisible] = useState(false);
@@ -30,7 +25,7 @@ export default function page(){
         });
         const result = await response.json();
         if(result.length){
-          localStorage.setItem("username",result[0].username)
+          localStorage.setItem("sender",result[0].username)
           router.push('/main/chat')
         }else{
           setNotFoundMSG(true)
