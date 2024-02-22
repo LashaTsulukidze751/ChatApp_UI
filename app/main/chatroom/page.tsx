@@ -1,8 +1,6 @@
 "use client";
-// Importing React and relevant types
 import React, { useEffect, useState } from "react";
 
-// Defining the message type
 interface Message {
   content: string;
   messageid: number;
@@ -12,36 +10,47 @@ interface Message {
 }
 
 interface User {
-  user: string;
+  userid: string;
 }
 
 const Page: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     { content: "", messageid: 0, receiverid: 0, senderid: 0, timestamp: "" },
   ]);
-  const [user1, setUser1] = useState<User[]>([{ user: "" }]);
-  const [user2, setUser2] = useState<User[]>([{ user: "" }]);
+  const [user1, setUser1] = useState("");
+  const [user2, setUser2] = useState("");
 
   // Fetch messages on component mount
   useEffect(() => {
     let ignore = true;
     if (ignore) {
-      async () => {
-        setUser1(await getUsersID(localStorage.getItem("sender")));
-        setUser2(await getUsersID(localStorage.getItem("receiver")));
-      };
-      console.log(user1, user2);
-
       fetchMessage();
-      return () => {
-        ignore = false;
-      };
     }
+    return () => {
+      ignore = false;
+    };
   }, []);
+
+  useEffect(() => {
+    let ignore = true;
+    const fetchData = async () => {
+      if (ignore) {
+        await fetchusers();
+      }
+    };
+    fetchData();
+    return () => {
+      ignore = false;
+    };
+  }, [user1, user2]);
+
+  const fetchusers = async () => {
+    setUser1(await getUsersID(localStorage.getItem("sender")));
+    setUser2(await getUsersID(localStorage.getItem("receiver")));
+  };
 
   //get users
   const getUsersID = async (username: string | null) => {
-    console.log("username:", username);
     const response = await fetch("http://localhost:4000/main/chatroom/users", {
       method: "POST",
       headers: {
@@ -50,7 +59,7 @@ const Page: React.FC = () => {
       body: JSON.stringify({ user: username }),
     });
     const result: User[] = await response.json();
-    return result;
+    return result[0].userid;
   };
 
   // Fetch messages function
@@ -67,14 +76,12 @@ const Page: React.FC = () => {
     });
     const fetchedMessages: Message[] = await response.json();
     setMessages(fetchedMessages);
-    // console.log("messages", fetchedMessages);
   };
 
   // Send message function
   const sendMessage = async (e: any) => {
     e.preventDefault();
-
-    const response = await fetch("http://localhost:4000/main/chatroom/send", {
+    await fetch("http://localhost:4000/main/chatroom/send", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +92,6 @@ const Page: React.FC = () => {
         content: e.target[0].value,
       }),
     });
-    const sendMessage: string = await response.json();
     fetchMessage();
   };
 
@@ -95,13 +101,15 @@ const Page: React.FC = () => {
         <button onClick={fetchMessage}>fetch</button>
         <div className="h-fit w-full overflow-y-scroll">
           {messages.map((message, index) => {
-            const textAlignClass =
-              message.senderid == Number(user1)
-                ? "justify-end"
-                : "justify-start";
-
             return (
-              <p key={index} className={`w-full flex ${textAlignClass}`}>
+              <p
+                key={index}
+                className={`w-full flex ${
+                  message.senderid == Number(user1)
+                    ? "justify-end"
+                    : "justify-start"
+                }`}
+              >
                 {message.content}
               </p>
             );
