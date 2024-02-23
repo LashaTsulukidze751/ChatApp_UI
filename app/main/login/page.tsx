@@ -44,7 +44,7 @@ export default function page(){
               <input type="text" className="mb-3 w-full border bg-red-600 bg-transparent bg-opacity-30 px-[16px] py-[10px] text-[17px] shadow-lg outline-none placeholder:text-light-white focus:bg-red-600" placeholder="Enter Name" required/>
               <label className="ml-1 text-left text-sm font-bold">PASSWORD</label>
               <div className="mb-7 flex border focus-within:bg-red-700">
-                <input type={visible ? "text":"password" } className="w-5/6 bg-red-600 bg-transparent bg-opacity-30 px-[16px] py-[10px] text-[17px] shadow-lg outline-none placeholder:text-light-white" placeholder="Enter Password" required/>
+                <input type={visible ? "text": "password" } className="w-5/6 bg-red-600 bg-transparent bg-opacity-30 px-[16px] py-[10px] text-[17px] shadow-lg outline-none placeholder:text-light-white" placeholder="Enter Password" required/>
                 <div className="flex w-1/6 items-center justify-center bg-red-600 bg-transparent bg-opacity-30" onClick={()=>{setVisible(!visible)}}>
                   {visible ?  <IoEyeSharp className="h-6 w-6 fill-white"/>:<IoEyeOffSharp className="h-6 w-6 fill-white"/>}
                 </div>
