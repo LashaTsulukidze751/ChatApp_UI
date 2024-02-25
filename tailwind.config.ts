@@ -20,7 +20,7 @@ const config: Config = {
       ,
       textColor: {
         "light-white": "#ededed",
-        "gold":"#FFE9E9E9"
+        "gold":"#c49247"
       },
     },
   },
