@@ -3,43 +3,31 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation'
 import { useState } from "react";
 import { IoEyeSharp,IoEyeOffSharp } from "react-icons/io5";
+import { userLoginCheck } from "@/app/functions";
 
 
 export default function page(){
     const [visible, setVisible] = useState(false);
     const [notFoundMSG, setNotFoundMSG] = useState(false)
-    const router = useRouter()
-    
-    const handlesubmit = async (e:any)=>{
+    const router = useRouter();
+
+    const handleSubmit = async (e:any)=>{
       e.preventDefault();
-      try {
-        const response = await fetch("http://localhost:4000/main/login", {
-        method: "POST", 
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "username":e.target[0].value,
-            "password_hash":e.target[1].value
-          }),
-        });
-        const result = await response.json();
-        if(result.length){
-          localStorage.setItem("sender",result[0].username)
-          router.push('/main/chat')
-        }else{
-          setNotFoundMSG(true)
-        }
-        } catch (error) {
-          console.error("Error:", error);
+      const result = await userLoginCheck(e);
+      if(result.length){
+        localStorage.setItem("sender",result[0].username)
+        router.push('/main/chat')
+      }else{
+        setNotFoundMSG(true)
       }
+      console.log(result)
     }
     
     return( 
        <main className={`flex min-h-screen w-full flex-col items-center bg-gradient-to-bl from-yellow-500 to-red-600 text-center text-light-white`} >
         <h1 className="mb-2 mt-5 text-4xl font-bold md:text-6xl">LOG IN</h1>
           <div className="flex w-5/6 flex-col items-center bg-gray-300 bg-transparent bg-opacity-60 p-3 text-center md:w-1/2 lg:w-1/3">
-            <form action="" onSubmit={handlesubmit} onChange={()=>{setNotFoundMSG(false)}} className="flex w-full flex-col">
+            <form action="" onSubmit={handleSubmit} onChange={()=>{setNotFoundMSG(false)}} className="flex w-full flex-col">
               <label className="ml-1 text-left text-sm font-bold">NAME</label>
               <input type="text" className="mb-3 w-full border bg-red-600 bg-transparent bg-opacity-30 px-[16px] py-[10px] text-[17px] shadow-lg outline-none placeholder:text-light-white focus:bg-red-600" placeholder="Enter Name" required/>
               <label className="ml-1 text-left text-sm font-bold">PASSWORD</label>

@@ -1,46 +1,41 @@
 "use client";
+import { userRegistration } from "@/app/functions";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function page() {
-  const handlesubmit = async (e: any) => {
-    e.preventDefault();
+  const [userAddedMSG, setUserAddedMSG]=useState({message:'',added:false})
+  const router = useRouter();
 
-    try {
-      const response = await fetch("http://localhost:4000/reg", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: e.target[0].value,
-          usersurname: e.target[1].value,
-          gender: e.target[2].checked ? "male" : "female",
-          email: e.target[4].value,
-          password_hash: e.target[5].value,
-        }),
-      });
-      const result = await response.json();
-      console.log("Success:", result);
-    } catch (error) {
-      console.error("Error:", error);
+  const handleSubmit = async (e:any)=>{
+    e.preventDefault();
+    const result:any = await userRegistration(e)
+      setUserAddedMSG(result)
+    if(result.added){
+      setTimeout(() => {
+         router.push('/main/login')
+      }, 1500);
+     
     }
-  };
+  }
+  
 
   return (
     <main
-      className={`flex min-h-screen w-full flex-col items-center bg-gray-800 bg-cover bg-no-repeat`}
+      className={`flex min-h-screen w-full flex-col items-center bg-gradient-to-tl from-sky-500 to-gray-500`}
     >
-      <h1 className="mb-2 mt-5 text-[54px] font-bold text-blue-600">
+      <h1 className="mb-2 mt-5 text-4xl font-bold text-light-white md:text-6xl">
         CREATE ACCOUNT
       </h1>
-      <div className="flex w-[396px] flex-col rounded-md bg-gray-300 bg-transparent bg-opacity-60 p-3 text-center shadow-sm">
-        <form action="" onSubmit={handlesubmit} className="flex flex-col">
-          <label className="text-left text-sm font-bold text-white">NAME</label>
+      <div className="flex w-5/6 flex-col rounded-md bg-gray-300 bg-transparent bg-opacity-60 p-3 text-center shadow-sm md:w-1/2 lg:w-1/3">
+        <form action="" onSubmit={handleSubmit} className="flex w-full flex-col">
+          <label className="ml-1 text-left text-sm font-bold text-white">NAME</label>
           <input
             type="text"
             className="mb-3 w-full rounded-md border bg-transparent px-[16px] py-[10px] text-[17px] text-white outline-4 outline-blue-500 placeholder:text-white"
             placeholder="Enter Name"
           />
-          <label className="text-left text-sm font-bold text-white">
+          <label className="ml-1 text-left text-sm font-bold text-white">
             SURNAME
           </label>
           <input
@@ -48,13 +43,14 @@ export default function page() {
             className="mb-3 w-full rounded-md border bg-transparent px-[16px] py-[10px] text-[17px] text-white outline-4 outline-blue-500 placeholder:text-white"
             placeholder="Enter Surname"
           />
+          <label  className="ml-1 text-left text-sm font-bold text-white">GENDER</label>
           <div>
             <input type="radio" name="gender" id="" />
-            <label htmlFor="">male</label>
-            <input type="radio" name="gender" id="" />
-            <label htmlFor="">male</label>
+            <label className="ml-1 text-left text-sm font-bold text-white">Male</label>
+            <input type="radio" className="ml-4"  name="gender" id="" />
+            <label className="ml-1 text-left text-sm font-bold text-white">Female</label>
           </div>
-          <label className="text-left text-sm font-bold text-white">
+          <label className="ml-1 text-left text-sm font-bold text-white">
             EMAIL
           </label>
           <input
@@ -62,7 +58,7 @@ export default function page() {
             className="mb-3 w-full rounded-md border bg-transparent px-[16px] py-[10px] text-[17px] text-white outline-4 outline-blue-500 placeholder:text-white"
             placeholder="Enter Email"
           />
-          <label className="text-left text-sm font-bold text-white">
+          <label className="ml-1 text-left text-sm font-bold text-white">
             PASSWORD
           </label>
           <input
@@ -72,10 +68,12 @@ export default function page() {
           />
           <button
             type="submit"
-            className="lead-[48px] h-12 w-full rounded-[6px] bg-[#1877f2] text-xl font-bold text-white"
+            className="lead-[48px] h-12 w-full rounded-[6px] bg-[#1877f2] text-xl font-bold text-white hover:bg-sky-400"
           >
             CREATE
           </button>
+          <p className="text-light-white">{userAddedMSG.message}</p>
+
         </form>
       </div>
     </main>
