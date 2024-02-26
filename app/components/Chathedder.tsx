@@ -5,7 +5,7 @@ import { IoLogInOutline } from "react-icons/io5";
 
 export default function Chatheader() {
   return (
-    <header className="h-22 flex justify-between p-3">
+    <header className="flex h-[15vh] justify-between p-3">
       <div className="flex items-center">
         <Image
           src={logo}

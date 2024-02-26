@@ -16,6 +16,9 @@ const config: Config = {
       backgroundColor:{
         "gold":"#c49247",
         "dark-gold":"#fcb423"
+      },
+      borderColor:{
+        'gray':"#6b6b6b"
       }
       ,
       textColor: {

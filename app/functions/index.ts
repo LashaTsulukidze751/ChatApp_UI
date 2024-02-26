@@ -77,8 +77,11 @@ export const getAlluser = async () => {
 };
 
 //chatroom
-interface User {
+export interface User {
   userid: string;
+  username:string;
+  usersurname:string;
+  profileimage:string
 }
 export interface Message {
   content: string;
@@ -100,7 +103,7 @@ export const getUsersID = async (username: string | null) => {
     body: JSON.stringify({ user: username }),
   });
   const result: User[] = await response.json();
-  return result[0].userid;
+  return result[0];
 };
 
 export const fetchedMessage = async () => {

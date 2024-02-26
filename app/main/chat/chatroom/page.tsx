@@ -1,17 +1,29 @@
 "use client";
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 import {
   getUsersID,
   Message,
   fetchedMessage,
   sendMessage,
   SendMSG,
+  User,
 } from "@/app/functions";
-import { useForm, SubmitHandler } from "react-hook-form";
+
 
 export default function Page() {
-  const [user1, setUser1] = useState("");
-  const [user2, setUser2] = useState("");
+  const [user1, setUser1] = useState<User>({
+    userid: "",
+    username: "",
+    usersurname: "",
+    profileimage: "",
+  });
+  const [user2, setUser2] = useState<User>({
+    userid: "",
+    username: "",
+    usersurname: "",
+    profileimage: "",
+  });
   const [messages, setMessages] = useState<Message[]>([
     { content: "", messageid: 0, receiverid: 0, senderid: 0, timestamp: "" },
   ]);
@@ -27,25 +39,25 @@ export default function Page() {
       }
     };
     handleMessageFetch();
-    
+
     return () => {
       fetchData();
       ignore = false;
     };
-  }, []);
+  }, [localStorage.getItem('receiver'),localStorage.getItem('sender')]);
 
   useEffect(() => {
     // Scroll to the bottom when messages are updated
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
   const onSubmit: SubmitHandler<SendMSG> = async (data) => {
-    sendMessage(data.content, user1, user2);
-    handleMessageFetch()
+    sendMessage(data.content, user1.userid, user2.userid);
+    handleMessageFetch();
   };
-
 
   //get users
   const fetchusers = async () => {
@@ -59,35 +71,47 @@ export default function Page() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center">
-      <div className="flex h-[600px] w-[300px] flex-col items-end justify-end bg-fuchsia-300">
-        <button onClick={handleMessageFetch}>fetch</button>
-        <div className="h-fit w-full overflow-y-scroll" ref={messagesContainerRef}>
-          {messages.map((message, index) => {
-            return (
+    <div className="flex h-full w-full flex-col items-center justify-center p-2 pb-4">
+      <div className="flex h-16 w-full items-center">
+        <img src={user2.profileimage} alt="user image" className="ml-4 size-12 rounded-full"/>
+        <p className="ml-4">
+          {user2.username} {user2.usersurname}
+        </p>
+      </div>
+      <div
+        className="h-full w-full overflow-y-scroll border-y border-gray border-b-white"
+        ref={messagesContainerRef}
+      >
+        {messages.map((message, index) => {
+          const toggle = message.senderid == Number(user1.userid);
+
+          return (
+            <p
+              key={index}
+              className={`w-full flex p-px font-light    ${
+                toggle ? "justify-end " : "justify-start"
+              } `}
+            >
               <p
-                key={index}
-                className={`w-full flex ${
-                  message.senderid == Number(user1)
-                    ? "justify-end"
-                    : "justify-start"
+                className={`rounded-md border-gray-400 border p-1 ${
+                  toggle ? "bg-gold" : "bg-gray-700"
                 }`}
               >
                 {message.content}
               </p>
-            );
-          })}
-        </div>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex w-full items-baseline border border-red-500"
-        >
-          <input type="text" className="w-5/6" {...register("content")} />
-          <button type="submit" className="w-1/6">
-            send
-          </button>
-        </form>
+            </p>
+          );
+        })}
       </div>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex h-6 w-full items-baseline text-black"
+      >
+        <input type="text" className="h-6 w-5/6 outline-none" {...register("content")} autoComplete="off" />
+        <button type="submit" className="w-1/6">
+          send
+        </button>
+      </form>
     </div>
   );
 }
