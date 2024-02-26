@@ -1,24 +1,23 @@
 "use client";
-import { userRegistration } from "@/app/functions";
+import { userRegistration,RegInputs } from "@/app/functions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form"
 
 export default function page() {
   const [userAddedMSG, setUserAddedMSG]=useState({message:'',added:false})
   const router = useRouter();
+  const {register, handleSubmit} = useForm<RegInputs>()
 
-  const handleSubmit = async (e:any)=>{
-    e.preventDefault();
-    const result:any = await userRegistration(e)
+  const myfunc: SubmitHandler<RegInputs> = async (data) => {
+    const result:any = await userRegistration(data)
       setUserAddedMSG(result)
     if(result.added){
       setTimeout(() => {
          router.push('/main/login')
       }, 1500);
-     
     }
   }
-  
 
   return (
     <main
@@ -28,10 +27,11 @@ export default function page() {
         CREATE ACCOUNT
       </h1>
       <div className="flex w-5/6 flex-col rounded-md bg-gray-300 bg-transparent bg-opacity-60 p-3 text-center shadow-sm md:w-1/2 lg:w-1/3">
-        <form action="" onSubmit={handleSubmit} className="flex w-full flex-col">
+        <form action="" onSubmit={handleSubmit(myfunc)} className="flex w-full flex-col">
           <label className="ml-1 text-left text-sm font-bold text-white">NAME</label>
           <input
             type="text"
+            {...register("name")}
             className="mb-3 w-full rounded-md border bg-transparent px-[16px] py-[10px] text-[17px] text-white outline-4 outline-blue-500 placeholder:text-white"
             placeholder="Enter Name"
           />
@@ -40,21 +40,21 @@ export default function page() {
           </label>
           <input
             type="text"
+            {...register("surname")}
             className="mb-3 w-full rounded-md border bg-transparent px-[16px] py-[10px] text-[17px] text-white outline-4 outline-blue-500 placeholder:text-white"
             placeholder="Enter Surname"
           />
           <label  className="ml-1 text-left text-sm font-bold text-white">GENDER</label>
-          <div>
-            <input type="radio" name="gender" id="" />
-            <label className="ml-1 text-left text-sm font-bold text-white">Male</label>
-            <input type="radio" className="ml-4"  name="gender" id="" />
-            <label className="ml-1 text-left text-sm font-bold text-white">Female</label>
-          </div>
+          <select {...register("gender")}>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select>
           <label className="ml-1 text-left text-sm font-bold text-white">
             EMAIL
           </label>
           <input
             type="text"
+            {...register("email")}
             className="mb-3 w-full rounded-md border bg-transparent px-[16px] py-[10px] text-[17px] text-white outline-4 outline-blue-500 placeholder:text-white"
             placeholder="Enter Email"
           />
@@ -63,6 +63,7 @@ export default function page() {
           </label>
           <input
             type="text"
+            {...register("password")}
             className="mb-3 w-full rounded-md border bg-transparent px-[16px] py-[10px] text-[17px] text-white outline-4 outline-blue-500 placeholder:text-white"
             placeholder="Enter Password"
           />
@@ -73,7 +74,6 @@ export default function page() {
             CREATE
           </button>
           <p className="text-light-white">{userAddedMSG.message}</p>
-
         </form>
       </div>
     </main>

@@ -1,8 +1,9 @@
-import { useState } from "react";
-
 //login
-
-export const userLoginCheck = async (e: any) => {
+export type LoginInputs = {
+  name:string
+  password:string
+} 
+export const userLoginCheck = async (data:LoginInputs) => {
   try {
     const response = await fetch("http://localhost:4000/main/login", {
       method: "POST",
@@ -10,8 +11,8 @@ export const userLoginCheck = async (e: any) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: e.target[0].value,
-        password_hash: e.target[1].value,
+        username: data.name,
+        password_hash: data.password,
       }),
     });
     const result = await response.json();
@@ -26,8 +27,14 @@ export const userLoginCheck = async (e: any) => {
 };
 
 //registration
-export const userRegistration = async (e: any) => {
-  e.preventDefault();
+export type RegInputs = {
+  name: string;
+  surname: string;
+  gender: string;
+  email: string;
+  password: string;
+};
+export const userRegistration = async (data: RegInputs) => {
   try {
     const response = await fetch("http://localhost:4000/reg", {
       method: "POST",
@@ -35,11 +42,11 @@ export const userRegistration = async (e: any) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: e.target[0].value,
-        usersurname: e.target[1].value,
-        gender: e.target[2].checked ? "male" : "female",
-        email: e.target[4].value,
-        password_hash: e.target[5].value,
+        username: data.name,
+        usersurname: data.surname,
+        gender: data.gender,
+        email: data.email,
+        password_hash: data.password,
       }),
     });
     const result = await response.json();
@@ -73,7 +80,6 @@ export const getAlluser = async () => {
 interface User {
   userid: string;
 }
-
 export interface Message {
   content: string;
   messageid: number;
@@ -81,6 +87,9 @@ export interface Message {
   senderid: number;
   timestamp: string;
 }
+export type SendMSG={
+  content:string
+} 
 
 export const getUsersID = async (username: string | null) => {
   const response = await fetch("http://localhost:4000/main/chatroom/users", {
@@ -109,8 +118,8 @@ export const fetchedMessage = async () => {
   return result;
 };
 
-export const sendMessage = async (e: any, user1: string, user2: string) => {
-  e.preventDefault();
+export const sendMessage = async (content:string, user1: string, user2: string) => {
+
   await fetch("http://localhost:4000/main/chatroom/send", {
     method: "POST",
     headers: {
@@ -119,8 +128,7 @@ export const sendMessage = async (e: any, user1: string, user2: string) => {
     body: JSON.stringify({
       senderid: user1,
       receiverid: user2,
-      content: e.target[0].value,
+      content: content,
     }),
   });
-  fetchedMessage();
 };
