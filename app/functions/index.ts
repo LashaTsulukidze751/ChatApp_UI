@@ -118,11 +118,11 @@ export const fetchedMessage = async () => {
     }),
   });
   const result: Message[] = await response.json();
+  
   return result;
 };
 
 export const sendMessage = async (content:string, user1: string, user2: string) => {
-
   await fetch("http://localhost:4000/main/chatroom/send", {
     method: "POST",
     headers: {

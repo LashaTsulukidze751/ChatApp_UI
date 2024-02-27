@@ -10,7 +10,6 @@ import {
   User,
 } from "@/app/functions";
 
-
 export default function Page() {
   const [user1, setUser1] = useState<User>({
     userid: "",
@@ -34,17 +33,16 @@ export default function Page() {
     let ignore = true;
     const fetchData = async () => {
       if (ignore) {
-        await fetchusers();
-        console.log("lasha");
+        await fetchusers();handleMessageFetch();
       }
     };
-    handleMessageFetch();
+    fetchData();
 
     return () => {
-      fetchData();
+      
       ignore = false;
     };
-  }, [localStorage.getItem('receiver'),localStorage.getItem('sender')]);
+  }, [localStorage.getItem("receiver")]);
 
   useEffect(() => {
     // Scroll to the bottom when messages are updated
@@ -55,8 +53,11 @@ export default function Page() {
   }, [messages]);
 
   const onSubmit: SubmitHandler<SendMSG> = async (data) => {
-    sendMessage(data.content, user1.userid, user2.userid);
-    handleMessageFetch();
+    await sendMessage(data.content, user1.userid, user2.userid).then(() => {
+      handleMessageFetch();
+    });
+
+    console.log("fetchmesg");
   };
 
   //get users
@@ -68,12 +69,16 @@ export default function Page() {
   const handleMessageFetch = async () => {
     const result = await fetchedMessage();
     setMessages(result);
+    console.log("message fetch");
   };
-
   return (
     <div className="flex h-full w-full flex-col items-center justify-center p-2 pb-4">
       <div className="flex h-16 w-full items-center">
-        <img src={user2.profileimage} alt="user image" className="ml-4 size-12 rounded-full"/>
+        <img
+          src={user2.profileimage}
+          alt="user image"
+          className="ml-4 size-12 rounded-full"
+        />
         <p className="ml-4">
           {user2.username} {user2.usersurname}
         </p>
@@ -86,7 +91,7 @@ export default function Page() {
           const toggle = message.senderid == Number(user1.userid);
 
           return (
-            <p
+            <h1
               key={index}
               className={`w-full flex p-px font-light    ${
                 toggle ? "justify-end " : "justify-start"
@@ -99,7 +104,7 @@ export default function Page() {
               >
                 {message.content}
               </p>
-            </p>
+            </h1>
           );
         })}
       </div>
@@ -107,7 +112,12 @@ export default function Page() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex h-6 w-full items-baseline text-black"
       >
-        <input type="text" className="h-6 w-5/6 outline-none" {...register("content")} autoComplete="off" />
+        <input
+          type="text"
+          className="h-6 w-5/6 outline-none"
+          {...register("content")}
+          autoComplete="off"
+        />
         <button type="submit" className="w-1/6">
           send
         </button>

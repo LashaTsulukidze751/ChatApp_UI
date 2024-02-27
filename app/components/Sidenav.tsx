@@ -31,9 +31,8 @@ export default function Sizenav() {
 
   return (
     <div className="w-1/6 border-r border-gray md:w-2/6 lg:w-1/4 xl:w-1/6">
-     <p>search</p>
-      <div 
-      className="h-full overflow-y-scroll">
+      <p>search</p>
+      <div className="h-full overflow-y-scroll">
         {users.map((user) => (
           <div
             key={user.username}
@@ -44,7 +43,10 @@ export default function Sizenav() {
               handleUsersGet();
             }}
           >
-            <div className="flex md:ml-4"><p>{user.username}</p><p className="ml-1 hidden md:inline">{user.usersurname}</p></div>
+            <div className="flex md:ml-4">
+              <p>{user.username}</p>
+              <p className="ml-1 hidden md:inline">{user.usersurname}</p>
+            </div>
             <img
               className="size-14 overflow-hidden rounded-full"
               src={user.profileimage}
