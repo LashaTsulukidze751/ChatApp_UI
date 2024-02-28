@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+
 import { getAlluser } from "@/app/functions";
+import Link from "next/link";
 
 interface Users {
   username: string;
@@ -13,7 +14,6 @@ export default function Sizenav() {
   const [users, setUsers] = useState<Users[]>([
     { username: "", usersurname: "", profileimage: "" },
   ]);
-  const router = useRouter();
 
   useEffect(() => {
     let ignore = false;
@@ -34,25 +34,28 @@ export default function Sizenav() {
       <p>search</p>
       <div className="h-full overflow-y-scroll">
         {users.map((user) => (
-          <div
+          <Link
             key={user.username}
-            className="m-2 flex flex-col items-center md:flex-row-reverse md:justify-end"
-            onClick={() => {
-              localStorage.setItem("receiver", user.username);
-              router.push(`/main/chat/chatroom`);
-              handleUsersGet();
+            href={{
+              pathname: "/main/chat/chatroom",
+              query: { name: user.username },
             }}
           >
-            <div className="flex md:ml-4">
-              <p>{user.username}</p>
-              <p className="ml-1 hidden md:inline">{user.usersurname}</p>
+            <div
+              className="m-2 flex flex-col items-center md:flex-row-reverse md:justify-end"
+              onClick={() => handleUsersGet()}
+            >
+              <div className="flex md:ml-4">
+                <p>{user.username}</p>
+                <p className="ml-1 hidden md:inline">{user.usersurname}</p>
+              </div>
+              <img
+                className="size-14 overflow-hidden rounded-full"
+                src={user.profileimage}
+                alt="Picture of the author"
+              />
             </div>
-            <img
-              className="size-14 overflow-hidden rounded-full"
-              src={user.profileimage}
-              alt="Picture of the author"
-            />
-          </div>
+          </Link>
         ))}
       </div>
     </div>

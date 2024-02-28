@@ -1,3 +1,4 @@
+"use client"
 import Chatheader from "@/app/components/Chathedder";
 import Sidenav from "@/app/components/Sidenav";
 

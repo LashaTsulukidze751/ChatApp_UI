@@ -1,9 +1,9 @@
 //login
 export type LoginInputs = {
-  name:string
-  password:string
-} 
-export const userLoginCheck = async (data:LoginInputs) => {
+  name: string;
+  password: string;
+};
+export const userLoginCheck = async (data: LoginInputs) => {
   try {
     const response = await fetch("http://localhost:4000/main/login", {
       method: "POST",
@@ -79,9 +79,9 @@ export const getAlluser = async () => {
 //chatroom
 export interface User {
   userid: string;
-  username:string;
-  usersurname:string;
-  profileimage:string
+  username: string;
+  usersurname: string;
+  profileimage: string;
 }
 export interface Message {
   content: string;
@@ -90,11 +90,12 @@ export interface Message {
   senderid: number;
   timestamp: string;
 }
-export type SendMSG={
-  content:string
-} 
+export type SendMSG = {
+  content: string;
+};
 
 export const getUsersID = async (username: string | null) => {
+  console.log(username);
   const response = await fetch("http://localhost:4000/main/chatroom/users", {
     method: "POST",
     headers: {
@@ -106,23 +107,27 @@ export const getUsersID = async (username: string | null) => {
   return result[0];
 };
 
-export const fetchedMessage = async () => {
+export const fetchedMessage = async (user1: string | null, user2:string|null) => {
   const response = await fetch("http://localhost:4000/main/chatroom", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      user1: localStorage.getItem("sender"),
-      user2: localStorage.getItem("receiver"),
+      user1: user1,
+      user2: user2,
     }),
   });
   const result: Message[] = await response.json();
-  
+
   return result;
 };
 
-export const sendMessage = async (content:string, user1: string, user2: string) => {
+export const sendMessage = async (
+  content: string,
+  user1: string,
+  user2: string
+) => {
   await fetch("http://localhost:4000/main/chatroom/send", {
     method: "POST",
     headers: {
