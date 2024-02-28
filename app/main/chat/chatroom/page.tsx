@@ -134,9 +134,9 @@ export default function Page() {
         onSubmit={handleSubmit(onSubmit)}
         className="relative flex h-6 w-full items-baseline text-black"
       >
-        <div className="absolute -top-80 flex w-full flex-wrap overflow-y-scroll">
+        <div className="absolute -top-80 flex h-80 w-[300px] flex-wrap overflow-y-scroll bg-neutral-600">
             {smiles && smiles.map((smile)=>{
-              return (<p className="size-12 text-center text-lg">{smile.character}</p>)
+              return (<p className="size-12 text-center text-[35px]">{smile.character && smile.character}</p>)
             })}
         </div>
         <input
