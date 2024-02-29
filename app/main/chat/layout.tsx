@@ -6,7 +6,7 @@ import Sidenav from "@/app/components/Sidenav";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 to-slate-500 text-light-white">
+    <div className="bg-darkBlack min-h-screen w-full text-light-white">
       <Chatheader/>
       <div className="flex h-[85vh] w-full overflow-y-hidden border-t border-gray">
         <Sidenav />
