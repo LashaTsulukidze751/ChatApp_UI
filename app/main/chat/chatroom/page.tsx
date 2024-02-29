@@ -1,4 +1,5 @@
 "use client";
+import { IoIosSend } from "react-icons/io";
 import React, { useEffect, useState, useRef } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
@@ -12,8 +13,10 @@ import {
 import { useSearchParams } from "next/navigation";
 
 type Smile = {
-  character:string
-}
+  character: string;
+  codePoint: string;
+  unicodeName: string;
+};
 
 export default function Page() {
   const [user1, setUser1] = useState<User>({
@@ -31,20 +34,20 @@ export default function Page() {
   const [messages, setMessages] = useState<Message[]>([
     { content: "", messageid: 0, receiverid: 0, senderid: 0, timestamp: "" },
   ]);
-  const [smiles, setSmiles] = useState<Smile>()
+  const [smiles, setSmiles] = useState<Smile[]>();
+  const [toggleEmoji, setToggleEmoji] = useState(false);
+  const [smilename, setSmilename] = useState("");
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const { register, handleSubmit, setValue, getValues } = useForm<SendMSG>();
 
-
-  
   const emojifetch = async () => {
     const fetched = await fetch(
       "https://emoji-api.com/emojis?access_key=433ceb66ef94adfed0f6bac6a41215207cb27fa0"
     );
     const result = await fetched.json();
     console.log(result);
-    setSmiles(result)
+    setSmiles(result);
   };
   useEffect(() => {
     let ignore = true;
@@ -69,9 +72,12 @@ export default function Page() {
   }, [messages]);
 
   const onSubmit: SubmitHandler<SendMSG> = async (data) => {
-    await sendMessage(data.content, user1.userid, user2.userid).then(() => {
-      handleMessageFetch();
-    });
+    if (data.content !== "") {
+      await sendMessage(data.content, user1.userid, user2.userid).then(() => {
+        handleMessageFetch();
+      });
+      setValue("content", "");
+    }
   };
   //get users
   const fetchusers = async () => {
@@ -99,7 +105,7 @@ export default function Page() {
         </p>
       </div>
       <div
-        className="h-full w-full overflow-y-scroll border-y border-gray border-b-white"
+        className="mb-2 h-full w-full overflow-x-hidden overflow-y-scroll border border-gray"
         ref={messagesContainerRef}
       >
         {messages.map((message, index) => {
@@ -107,13 +113,13 @@ export default function Page() {
           return (
             <h1
               key={index}
-              className={`w-full flex p-px font-light    ${
+              className={` flex p-px font-light    ${
                 toggle ? "justify-end " : "justify-start"
               } `}
             >
               <p
-                className={`rounded-md border-gray-400 border p-1 ${
-                  toggle ? "bg-gold" : "bg-gray-700"
+                className={`rounded-md border-gray-400 text-xl max-w-[65%] border p-1 mx-1  ${
+                  toggle ? "bg-gold" : "bg-dimond"
                 }`}
               >
                 {message.content}
@@ -122,32 +128,68 @@ export default function Page() {
           );
         })}
       </div>
-      <button
-        onClick={() => {
-          const value = getValues("content");
-          setValue("content", value + "lasha");
-        }}
-      >
-        add something
-      </button>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="relative flex h-6 w-full items-baseline text-black"
+        className="relative flex h-10 w-full items-center border border-gray text-black"
       >
-        <div className="absolute -top-80 flex h-80 w-[300px] flex-wrap overflow-y-scroll bg-neutral-600">
-            {smiles && smiles.map((smile)=>{
-              return (<p className="size-12 text-center text-[35px]">{smile.character && smile.character}</p>)
-            })}
+        {toggleEmoji && (
+          <div className="absolute -top-[330px] h-80 w-[300px] bg-neutral-600 p-2">
+            <input
+              className="z-10 h-[10%] w-full"
+              onChange={(e) => {
+                setSmilename(e.target.value);
+              }}
+            />
+            <div className="z-0 mt-2 flex h-[87%] w-full flex-wrap overflow-x-hidden overflow-y-scroll">
+              {smiles &&
+                smiles.map((smile) => {
+                  return (
+                    smile.unicodeName.includes(smilename) && (
+                      <p
+                        key={smile.codePoint}
+                        className="size-11 text-center text-[35px] hover:cursor-pointer"
+                        onClick={() => {
+                          const value = getValues("content");
+                          setValue("content", value + smile.character);
+                        }}
+                      >
+                        {smile.character}
+                      </p>
+                    )
+                  );
+                })}
+              s
+            </div>
+          </div>
+        )}
+        <div
+          className="flex items-center justify-center pb-1 text-3xl hover:cursor-pointer hover:bg-gold"
+          onClick={() => {
+            setToggleEmoji(!toggleEmoji);
+          }}
+        >
+          <div className="hover:animate-bounce">
+          &#x1F642;
+          </div>
         </div>
         <input
           type="text"
-          className="h-6 w-5/6 outline-none"
+          className="h-9 w-full bg-inherit pl-2 text-light-white outline-none"
           {...register("content")}
           autoComplete="off"
-        
+          onClick={() => {
+            setToggleEmoji(false);
+          }}
         />
-        <button type="submit" className="w-1/6">
-          send
+        <button
+          type="submit"
+          className="hover:fill-gold flex items-center bg-gold px-2 text-white hover:cursor-pointer"
+          onClick={() => {
+            setToggleEmoji(false);
+          }}
+        >
+          SEND
+          <IoIosSend className="size-9 fill-white" />
         </button>
       </form>
     </div>
