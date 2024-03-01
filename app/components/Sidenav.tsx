@@ -31,15 +31,15 @@ export default function Sizenav() {
   };
 
   return (
-    <div className="w-1/6 border-r border-gray md:w-2/6 lg:w-1/4 xl:w-1/6">
+    <div className="flex h-[17vh] w-full flex-col border-r border-gray p-2 sm:h-full sm:w-1/6 md:w-1/3 lg:w-1/4 xl:w-1/6">
       <input
-        className="m-2 h-7 w-[94%] pl-1 text-black outline-amber-400 placeholder:text-black"
+        className="w-full pl-1 text-black outline-amber-400 placeholder:text-black"
         placeholder="Search users"
         onChange={(e) => {
           setSearchUser(e.target.value);
         }}
       />
-      <div className="h-full overflow-y-scroll">
+      <div className="flex overflow-y-hidden overflow-x-scroll sm:h-full sm:flex-col sm:overflow-x-hidden sm:overflow-y-scroll">
         {users.map((user) => {
           let fullname = user.username + user.usersurname;
           return (
@@ -60,7 +60,7 @@ export default function Sizenav() {
                     <p className="ml-1 hidden md:inline">{user.usersurname}</p>
                   </div>
                   <img
-                    className="size-14 overflow-hidden rounded-full"
+                    className="max-h-14 min-h-14 min-w-14 max-w-14 overflow-hidden rounded-full"
                     src={user.profileimage}
                     alt="Picture of the author"
                   />
