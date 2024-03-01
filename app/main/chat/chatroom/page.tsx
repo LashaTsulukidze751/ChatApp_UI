@@ -37,6 +37,7 @@ export default function Page() {
   const [smiles, setSmiles] = useState<Smile[]>();
   const [toggleEmoji, setToggleEmoji] = useState(false);
   const [smilename, setSmilename] = useState("");
+  const [toggleEdit, setToggleEdit] = useState(false)
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const { register, handleSubmit, setValue, getValues } = useForm<SendMSG>();
@@ -110,13 +111,17 @@ export default function Page() {
       >
         {messages.map((message, index) => {
           const toggle = message.senderid == Number(user1.userid);
+          
           return (
             <h1
               key={index}
+              onClick={()=>{console.log(message.messageid);}}
               className={` flex p-px font-light    ${
                 toggle ? "justify-end " : "justify-start"
               } `}
             >
+              <span onClick={()=>{setToggleEdit(!toggleEdit)}}>edit</span>
+              {toggleEdit && <div className="relative">edit</div>}
               <p
                 className={`rounded-md border-gray-400 text-xl max-w-[65%] border p-1 mx-1  ${
                   toggle ? "bg-gold" : "bg-dimond"

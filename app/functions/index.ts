@@ -107,7 +107,10 @@ export const getUsersID = async (username: string | null) => {
   return result[0];
 };
 
-export const fetchedMessage = async (user1: string | null, user2:string|null) => {
+export const fetchedMessage = async (
+  user1: string | null,
+  user2: string | null
+) => {
   const response = await fetch("http://localhost:4000/main/chatroom", {
     method: "POST",
     headers: {
@@ -139,4 +142,19 @@ export const sendMessage = async (
       content: content,
     }),
   });
+};
+
+export const fetchedMessageamount = async (data: string) => {
+  const response = await fetch("http://localhost:4000/main/userinfo", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      user: data,
+    }),
+  });
+  const result: {count:string} = await response.json();
+
+  return result;
 };
