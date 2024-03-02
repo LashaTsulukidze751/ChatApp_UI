@@ -39,7 +39,7 @@ export default function Sizenav() {
           setSearchUser(e.target.value);
         }}
       />
-      <div className="flex overflow-y-hidden overflow-x-scroll sm:h-full sm:flex-col sm:overflow-x-hidden sm:overflow-y-scroll">
+      <ul className="flex overflow-y-hidden overflow-x-scroll sm:h-full sm:flex-col sm:overflow-x-hidden sm:overflow-y-scroll">
         {users.map((user) => {
           let fullname = user.username + user.usersurname;
           return (
@@ -51,7 +51,7 @@ export default function Sizenav() {
                   query: { name: user.username },
                 }}
               >
-                <div
+                <li
                   className="m-2 flex flex-col items-center hover:text-dark-gold md:flex-row-reverse md:justify-end"
                   onClick={() => handleUsersGet()}
                 >
@@ -64,12 +64,12 @@ export default function Sizenav() {
                     src={user.profileimage}
                     alt="Picture of the author"
                   />
-                </div>
+                </li>
               </Link>
             )
           );
         })}
-      </div>
+      </ul>
     </div>
   );
 }

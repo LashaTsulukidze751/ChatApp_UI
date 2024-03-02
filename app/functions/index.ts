@@ -158,3 +158,19 @@ export const fetchedMessageamount = async (data: string) => {
 
   return result;
 };
+
+export const deleteMessage = async (data: number) => {
+  const response = await fetch("http://localhost:4000/main/chat/messages", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      messageid: data,
+    }),
+  });
+  const result = await response.text();
+  console.log(result)
+};
+
+

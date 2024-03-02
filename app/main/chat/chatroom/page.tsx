@@ -9,6 +9,7 @@ import {
   sendMessage,
   SendMSG,
   User,
+  deleteMessage,
 } from "@/app/functions";
 import { useSearchParams } from "next/navigation";
 
@@ -37,7 +38,9 @@ export default function Page() {
   const [smiles, setSmiles] = useState<Smile[]>();
   const [toggleEmoji, setToggleEmoji] = useState(false);
   const [smilename, setSmilename] = useState("");
-  const [toggleEdit, setToggleEdit] = useState(false)
+  const [toggleEdit, setToggleEdit] = useState(false);
+  const [messageNumber, setMessageNumber] = useState(0);
+
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const { register, handleSubmit, setValue, getValues } = useForm<SendMSG>();
@@ -72,6 +75,7 @@ export default function Page() {
     }
   }, [messages]);
 
+
   const onSubmit: SubmitHandler<SendMSG> = async (data) => {
     if (data.content !== "") {
       await sendMessage(data.content, user1.userid, user2.userid).then(() => {
@@ -93,6 +97,7 @@ export default function Page() {
       searchParams.get("name")
     ).then((data) => setMessages(data));
   };
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-center p-2 pb-4">
       <div className="flex h-16 w-full items-center">
@@ -111,17 +116,48 @@ export default function Page() {
       >
         {messages.map((message, index) => {
           const toggle = message.senderid == Number(user1.userid);
-          
+
           return (
             <h1
               key={index}
-              onClick={()=>{console.log(message.messageid);}}
-              className={` flex p-px font-light    ${
-                toggle ? "justify-end " : "justify-start"
+              onClick={() => {
+                console.log(message.messageid);
+                setMessageNumber(message.messageid);
+              }}
+              className={` flex p-px font-light justify-end   ${
+                !toggle && " flex-row-reverse"
               } `}
             >
-              <span onClick={()=>{setToggleEdit(!toggleEdit)}}>edit</span>
-              {toggleEdit && <div className="relative">edit</div>}
+              <div>
+                <div
+                  onClick={() => {
+                    setToggleEdit(!toggleEdit);
+                  }}
+                  className="cursor-pointer text-xl font-extrabold"
+                >
+                  ...
+                </div>
+                <div className="relative">
+                  {message.messageid == messageNumber && toggleEdit && (
+                    <div
+                      className={`absolute bottom-0 flex flex-col right-5 h-28 w-20 bg-gray-600 ${
+                        !toggle && "right-0 left-5"
+                      }`}
+                    >
+                      <button
+                        onClick={async () => {
+                          setToggleEdit(false);
+                          await deleteMessage(message.messageid);
+                          await handleMessageFetch();
+                        }}
+                      >
+                        delete
+                      </button>
+                      <button>edit</button>
+                    </div>
+                  )}
+                </div>
+              </div>
               <p
                 className={`rounded-md border-gray-400 text-xl max-w-[65%] border p-1 mx-1  ${
                   toggle ? "bg-gold" : "bg-dimond"
@@ -173,9 +209,7 @@ export default function Page() {
             setToggleEmoji(!toggleEmoji);
           }}
         >
-          <div className="hover:animate-bounce">
-          &#x1F642;
-          </div>
+          <div className="hover:animate-bounce">&#x1F642;</div>
         </div>
         <input
           type="text"
