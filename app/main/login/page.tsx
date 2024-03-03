@@ -15,7 +15,7 @@ export default function page() {
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     const result = await userLoginCheck(data);
     if (result.length) {
-      localStorage.setItem("sender", result[0].username);
+      localStorage.setItem("sender", result[0].userid);
       router.push("/main/chat");
     } else {
       setNotFoundMSG(true);

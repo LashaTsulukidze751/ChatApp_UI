@@ -3,7 +3,7 @@ import { IoIosSend } from "react-icons/io";
 import React, { useEffect, useState, useRef } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
-  getUsersID,
+  getUsersInfo,
   Message,
   fetchedMessage,
   sendMessage,
@@ -50,11 +50,14 @@ export default function Page() {
       "https://emoji-api.com/emojis?access_key=433ceb66ef94adfed0f6bac6a41215207cb27fa0"
     );
     const result = await fetched.json();
-    console.log(result);
     setSmiles(result);
   };
   useEffect(() => {
     let ignore = true;
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
     return () => {
       if (ignore) {
         emojifetch();
@@ -65,16 +68,7 @@ export default function Page() {
 
   useEffect(() => {
     fetchusers();
-  }, [searchParams.get("name")]);
-
-  useEffect(() => {
-    // Scroll to the bottom when messages are updated
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight;
-    }
-  }, [messages]);
-
+  }, [searchParams.get("userid")]);
 
   const onSubmit: SubmitHandler<SendMSG> = async (data) => {
     if (data.content !== "") {
@@ -86,15 +80,15 @@ export default function Page() {
   };
   //get users
   const fetchusers = async () => {
-    setUser1(await getUsersID(localStorage.getItem("sender")));
-    setUser2(await getUsersID(searchParams.get("name")));
+    setUser1(await getUsersInfo(localStorage.getItem("sender")));
+    setUser2(await getUsersInfo(searchParams.get("userid")));
     await handleMessageFetch();
   };
 
   const handleMessageFetch = async () => {
     await fetchedMessage(
       localStorage.getItem("sender"),
-      searchParams.get("name")
+      searchParams.get("userid")
     ).then((data) => setMessages(data));
   };
 
@@ -121,7 +115,6 @@ export default function Page() {
             <h1
               key={index}
               onClick={() => {
-                console.log(message.messageid);
                 setMessageNumber(message.messageid);
               }}
               className={` flex p-px font-light justify-end   ${

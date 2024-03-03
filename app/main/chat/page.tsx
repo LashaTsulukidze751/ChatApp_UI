@@ -1,6 +1,7 @@
 "use client";
 
-import { getUsersID, User, fetchedMessageamount } from "@/app/functions";
+import ProfileImage from "@/app/components/ProfileImage";
+import { getUsersInfo, User, fetchedMessageamount } from "@/app/functions";
 import { useEffect, useState } from "react";
 
 export default function Page() {
@@ -11,11 +12,13 @@ export default function Page() {
     userid: "",
   });
   const [messagesAmount, setMessagesAmount] = useState(0);
+  const [toggleProfileImageSelector, setToggleProfileImageSelector] =
+    useState(false);
 
   const fetchuserInfo = async () => {
-    const result = await getUsersID("lasha");
+    const result = await getUsersInfo(localStorage.getItem("sender"));
     setUser(result);
-    const amount = await fetchedMessageamount(result.userid);
+    const amount: any = await fetchedMessageamount(result.userid);
     setMessagesAmount(amount[0].count);
   };
   useEffect(() => {
@@ -30,7 +33,14 @@ export default function Page() {
           alt="sdl"
           className="mb-5 size-48 rounded-full"
         />
-        <button>Choose picture</button>
+        <button
+          onClick={() => {
+            setToggleProfileImageSelector(!toggleProfileImageSelector);
+          }}
+        >
+          Choose picture
+        </button>
+        <ProfileImage visibility={toggleProfileImageSelector} />
       </div>
       <p className="">Message sent:{messagesAmount}</p>
     </div>

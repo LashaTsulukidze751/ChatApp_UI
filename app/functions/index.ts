@@ -66,7 +66,7 @@ export const getAlluser = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: localStorage.getItem("sender"),
+        userid: localStorage.getItem("sender"),
       }),
     });
     const result = await response.json();
@@ -94,22 +94,21 @@ export type SendMSG = {
   content: string;
 };
 
-export const getUsersID = async (username: string | null) => {
-  console.log(username);
+export const getUsersInfo = async (data: string | null) => {
   const response = await fetch("http://localhost:4000/main/chatroom/users", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ user: username }),
+    body: JSON.stringify({ userid: data }),
   });
   const result: User[] = await response.json();
   return result[0];
 };
 
 export const fetchedMessage = async (
-  user1: string | null,
-  user2: string | null
+  userid1: string | null,
+  userid2: string | null
 ) => {
   const response = await fetch("http://localhost:4000/main/chatroom", {
     method: "POST",
@@ -117,8 +116,8 @@ export const fetchedMessage = async (
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      user1: user1,
-      user2: user2,
+      user1: userid1,
+      user2: userid2,
     }),
   });
   const result: Message[] = await response.json();
@@ -128,7 +127,7 @@ export const fetchedMessage = async (
 
 export const sendMessage = async (
   content: string,
-  user1: string,
+  user1: string | null,
   user2: string
 ) => {
   await fetch("http://localhost:4000/main/chatroom/send", {
@@ -154,8 +153,7 @@ export const fetchedMessageamount = async (data: string) => {
       user: data,
     }),
   });
-  const result: {count:string} = await response.json();
-
+  const result: { count: string } = await response.json();
   return result;
 };
 
@@ -169,8 +167,34 @@ export const deleteMessage = async (data: number) => {
       messageid: data,
     }),
   });
-  const result = await response.text();
-  console.log(result)
 };
 
 
+
+
+
+export type ProfileImageType = {
+  imageid:string
+  imageurl:string
+}
+
+//fetch profile images
+export const profileImagess = async () => {
+  const response = await fetch("http://localhost:4000/main/chat");
+  const result:ProfileImageType = await response.json();
+  return result;
+};
+//change profile picture
+export const handleProfileImageChange = async (url:string)=>{
+  const response = await fetch("http://localhost:4000/main/chat", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      url: url,
+      userid:localStorage.getItem("sender")
+    }),
+  });
+  const result = await response.text();
+}

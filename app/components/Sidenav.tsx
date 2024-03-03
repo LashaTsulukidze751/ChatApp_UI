@@ -5,6 +5,7 @@ import { getAlluser } from "@/app/functions";
 import Link from "next/link";
 
 interface Users {
+  userid: string
   username: string;
   profileimage: string;
   usersurname: string;
@@ -12,7 +13,7 @@ interface Users {
 
 export default function Sizenav() {
   const [users, setUsers] = useState<Users[]>([
-    { username: "", usersurname: "", profileimage: "" },
+    {userid:"", username: "", usersurname: "", profileimage: "" },
   ]);
   const [searchUser, setSearchUser] = useState("");
 
@@ -48,7 +49,7 @@ export default function Sizenav() {
                 key={user.username}
                 href={{
                   pathname: "/main/chat/chatroom",
-                  query: { name: user.username },
+                  query: { userid: user.userid },
                 }}
               >
                 <li
