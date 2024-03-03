@@ -198,3 +198,11 @@ export const handleProfileImageChange = async (url:string)=>{
   });
   const result = await response.text();
 }
+//fetch emojis
+export const emojifetch = async () => {
+  const fetched = await fetch(
+    "https://emoji-api.com/emojis?access_key=433ceb66ef94adfed0f6bac6a41215207cb27fa0"
+  );
+  const result = await fetched.json();
+  return result;
+};
