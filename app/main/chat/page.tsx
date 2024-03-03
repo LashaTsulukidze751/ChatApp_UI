@@ -16,10 +16,9 @@ export default function Page() {
     useState(false);
 
   const fetchuserInfo = async () => {
-    const result = await getUsersInfo(localStorage.getItem("sender"));
-    setUser(result);
-    const amount: any = await fetchedMessageamount(result.userid);
-    setMessagesAmount(amount[0].count);
+     await getUsersInfo(localStorage.getItem("sender")).then((data)=>{
+        setUser(data);
+    });
   };
   useEffect(() => {
     fetchuserInfo();
@@ -40,7 +39,7 @@ export default function Page() {
         >
           Choose picture
         </button>
-        <ProfileImage visibility={toggleProfileImageSelector} />
+        <ProfileImage visibility={toggleProfileImageSelector} fetchuserinfo={fetchuserInfo} />
       </div>
       <p className="">Message sent:{messagesAmount}</p>
     </div>
